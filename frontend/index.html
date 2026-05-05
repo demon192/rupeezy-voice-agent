@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RupeezyVoice — AI Partner Agent</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar: Lead Management -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>🎯 RupeezyVoice</h2>
+                <p>AI Partner Conversion Agent</p>
+            </div>
+            
+            <div class="lead-form">
+                <h3>Add Lead</h3>
+                <input type="text" id="leadName" placeholder="Lead Name">
+                <input type="text" id="leadPhone" placeholder="Phone Number">
+                <select id="leadLanguage">
+                    <option value="english">English</option>
+                    <option value="hindi">Hindi</option>
+                    <option value="hinglish">Hinglish</option>
+                    <option value="tamil">Tamil</option>
+                    <option value="telugu">Telugu</option>
+                    <option value="marathi">Marathi</option>
+                    <option value="gujarati">Gujarati</option>
+                    <option value="bengali">Bengali</option>
+                </select>
+                <button onclick="addLead()">+ Add Lead</button>
+                
+                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #2f3336;">
+                    <h3 style="font-size:0.85rem; color:#71767b; margin-bottom:8px;">Batch Upload (CSV)</h3>
+                    <textarea id="csvInput" rows="3" placeholder="name,phone,language&#10;Rahul Verma,9876543210,hindi&#10;Priya Singh,9988776655,english" 
+                        style="width:100%; padding:8px; background:#273340; border:1px solid #3d5466; border-radius:8px; color:#e7e9ea; font-size:0.8rem; resize:vertical;"></textarea>
+                    <button onclick="uploadCSV()" style="margin-top:6px; background:#7856ff;">📋 Upload Batch</button>
+                </div>
+            </div>
+
+            <div class="lead-list">
+                <h3>Leads <a href="/dashboard" class="dashboard-link">📊 Dashboard</a></h3>
+                <div id="leadsList"></div>
+            </div>
+        </aside>
+
+        <!-- Main: Chat Interface -->
+        <main class="chat-area">
+            <div class="chat-header" id="chatHeader">
+                <div class="chat-header-info">
+                    <h3 id="chatLeadName">Select a lead to start</h3>
+                    <span id="chatStatus" class="status-badge">—</span>
+                    <span id="langBadge" class="lang-badge"></span>
+                </div>
+                <div class="chat-actions">
+                    <button id="endCallBtn" onclick="endCall()" disabled>🔴 End Call</button>
+                </div>
+            </div>
+
+            <div class="messages" id="messagesContainer">
+                <div class="empty-state">
+                    <h2>👋 Welcome to RupeezyVoice</h2>
+                    <p>Add a lead from the sidebar and click "Start Call" to begin the AI conversation.</p>
+                    <p>The agent will pitch in the lead's language, handle objections, and qualify interest.</p>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <div class="voice-controls">
+                    <button id="voiceBtn" onclick="toggleVoice()" disabled title="Hold to speak">
+                        🎤
+                    </button>
+                    <span id="voiceStatus" class="voice-status"></span>
+                </div>
+                <input type="text" id="messageInput" placeholder="Type a message or click 🎤 to speak..." 
+                       onkeypress="handleKeyPress(event)" disabled>
+                <button id="sendBtn" onclick="sendMessage()" disabled>Send</button>
+            </div>
+
+            <!-- Call Summary Panel -->
+            <div class="summary-panel" id="summaryPanel" style="display: none;">
+                <h3>📋 Post-Call Summary</h3>
+                <div id="summaryContent"></div>
+                <button onclick="closeSummary()">Close</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
