@@ -166,6 +166,15 @@ async def chat(request: ConversationRequest):
     
     await db.update_conversation_messages(conv["id"], messages)
     
+    # Detect hot signals — suggest RM to end call
+    hot_phrases = [
+        "sign up", "signup", "link bhejo", "interested", "haan chalega",
+        "register", "join karna", "ready", "start karna", "haan bhai",
+        "let's do it", "send me", "bhej do", "kar do", "theek hai chalega"
+    ]
+    user_lower = request.message.lower()
+    suggest_end = any(phrase in user_lower for phrase in hot_phrases) and len(messages) >= 6
+    
     # If call should end, generate summary
     if result["should_end"]:
         await end_and_summarize(request.lead_id, conv["id"], messages)
@@ -174,6 +183,7 @@ async def chat(request: ConversationRequest):
         "reply": result["reply"],
         "language_detected": result["language_detected"],
         "is_ended": result["should_end"],
+        "suggest_end": suggest_end,
         "messages": messages
     }
 

@@ -205,6 +205,11 @@ async function sendMessage() {
             speak(data.reply, data.language_detected || 'english');
         }
 
+        // Suggest ending call if hot signal detected
+        if (data.suggest_end && !data.is_ended) {
+            showEndSuggestion();
+        }
+
         // If ended
         if (data.is_ended) {
             endCallUI();
@@ -294,6 +299,25 @@ function closeSummary() {
     document.getElementById('summaryPanel').style.display = 'none';
 }
 
+function showEndSuggestion() {
+    // Don't show if already showing
+    if (document.getElementById('endSuggestion')) return;
+    
+    const container = document.getElementById('messagesContainer');
+    const el = document.createElement('div');
+    el.id = 'endSuggestion';
+    el.className = 'end-suggestion';
+    el.innerHTML = `
+        <span>🔥 Hot lead detected! End call to update dashboard?</span>
+        <div>
+            <button onclick="endCall(); this.parentElement.parentElement.remove();">✅ End & Save</button>
+            <button onclick="this.parentElement.parentElement.remove();" style="background:#2f3336;">Continue</button>
+        </div>
+    `;
+    container.appendChild(el);
+    container.scrollTop = container.scrollHeight;
+}
+
 // --- UI Helpers ---
 
 function addMessageToUI(role, content) {
@@ -313,13 +337,33 @@ function addMessageToUI(role, content) {
         el.className = `message ${role}`;
     }
     
+    const ttsBtn = (role === 'assistant') 
+        ? `<button class="tts-btn" onclick="speakThis(this)" title="Listen">🔊</button>` 
+        : '';
+    
     el.innerHTML = `
-        ${content}
-        <div class="msg-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</div>
+        <div class="msg-content">${content}</div>
+        <div class="msg-footer">
+            <span class="msg-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</span>
+            ${ttsBtn}
+        </div>
     `;
     
     container.appendChild(el);
     container.scrollTop = container.scrollHeight;
+}
+
+function speakThis(btn) {
+    const msgContent = btn.closest('.message').querySelector('.msg-content').textContent;
+    if (!synthesis) return;
+    synthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(msgContent);
+    utterance.lang = LANG_CODES[currentLeadLanguage] || 'hi-IN';
+    utterance.rate = 0.95;
+    btn.textContent = '⏹️';
+    utterance.onend = () => { btn.textContent = '🔊'; };
+    utterance.onerror = () => { btn.textContent = '🔊'; };
+    synthesis.speak(utterance);
 }
 
 function showTyping() {

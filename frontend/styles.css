@@ -270,10 +270,66 @@ body {
     border-bottom-right-radius: 4px;
 }
 
+.message .msg-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+}
+
 .message .msg-time {
     font-size: 0.7rem;
     color: #71767b;
-    margin-top: 4px;
+}
+
+.message .tts-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    padding: 2px 4px;
+}
+
+.message:hover .tts-btn {
+    opacity: 1;
+}
+
+.end-suggestion {
+    align-self: center;
+    background: linear-gradient(135deg, #1a3a1a, #2d4a2d);
+    border: 1px solid #25D366;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin: 8px 0;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.end-suggestion span {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: #4ade80;
+    font-weight: 500;
+}
+
+.end-suggestion button {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin: 0 4px;
+    background: #25D366;
+    color: white;
+    font-weight: 500;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .typing-indicator {
