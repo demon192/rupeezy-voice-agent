@@ -10,12 +10,17 @@ let conversationActive = false;
 let recognition = null;
 let synthesis = window.speechSynthesis;
 let isRecording = false;
-let ttsEnabled = true;
+let ttsEnabled = false;
 
 // --- Init ---
 document.addEventListener('DOMContentLoaded', () => {
     loadLeads();
     initSpeechRecognition();
+    // Load voices (Chrome loads async)
+    if (synthesis) {
+        synthesis.getVoices();
+        synthesis.onvoiceschanged = () => synthesis.getVoices();
+    }
 });
 
 function escapeHtml(str) {
@@ -195,9 +200,10 @@ async function sendMessage() {
         const data = await res.json();
         addMessageToUI('assistant', data.reply);
 
-        // Update language badge
+        // Update language badge and STT/TTS
         if (data.language_detected) {
             document.getElementById('langBadge').textContent = data.language_detected;
+            updateRecognitionLanguage(data.language_detected);
         }
 
         // Speak response
@@ -338,7 +344,7 @@ function addMessageToUI(role, content) {
     }
     
     const ttsBtn = (role === 'assistant') 
-        ? `<button class="tts-btn" onclick="speakThis(this)" title="Listen">🔊</button>` 
+        ? `<button class="tts-btn" onclick="speakThis(this)" title="Listen to this message">▶ Listen</button>` 
         : '';
     
     el.innerHTML = `
@@ -356,14 +362,55 @@ function addMessageToUI(role, content) {
 function speakThis(btn) {
     const msgContent = btn.closest('.message').querySelector('.msg-content').textContent;
     if (!synthesis) return;
-    synthesis.cancel();
+    
+    // If already speaking, stop
+    if (synthesis.speaking) {
+        synthesis.cancel();
+        btn.textContent = '▶ Listen';
+        return;
+    }
+    
     const utterance = new SpeechSynthesisUtterance(msgContent);
-    utterance.lang = LANG_CODES[currentLeadLanguage] || 'hi-IN';
-    utterance.rate = 0.95;
-    btn.textContent = '⏹️';
-    utterance.onend = () => { btn.textContent = '🔊'; };
-    utterance.onerror = () => { btn.textContent = '🔊'; };
+    const langCode = LANG_CODES[currentLeadLanguage] || 'hi-IN';
+    utterance.lang = langCode;
+    
+    // Find best matching voice
+    const voices = synthesis.getVoices();
+    const langPrefix = langCode.split('-')[0]; // e.g. 'gu' from 'gu-IN'
+    let matchVoice = voices.find(v => v.lang === langCode);
+    if (!matchVoice) matchVoice = voices.find(v => v.lang.startsWith(langPrefix));
+    // Fallback: try Hindi for Indian scripts, then any Indian English
+    if (!matchVoice) matchVoice = voices.find(v => v.lang.startsWith('hi'));
+    if (!matchVoice) matchVoice = voices.find(v => v.lang === 'en-IN');
+    
+    if (matchVoice) {
+        utterance.voice = matchVoice;
+        utterance.lang = matchVoice.lang;
+    }
+    
+    console.log('TTS:', langCode, '| Voice:', matchVoice?.name || 'default', '| Available:', voices.length);
+    
+    utterance.rate = 0.9;
+    btn.textContent = '⏹ Stop';
+    utterance.onend = () => { btn.textContent = '▶ Listen'; };
+    utterance.onerror = (e) => { 
+        console.error('TTS error:', e); 
+        btn.textContent = '▶ Listen'; 
+    };
     synthesis.speak(utterance);
+}
+
+function toggleTTS() {
+    ttsEnabled = !ttsEnabled;
+    const btn = document.getElementById('ttsToggle');
+    if (ttsEnabled) {
+        btn.textContent = '🔊 Auto';
+        btn.style.background = 'rgba(29, 155, 240, 0.3)';
+    } else {
+        btn.textContent = '🔇 Auto';
+        btn.style.background = '';
+        synthesis.cancel(); // Stop any current speech
+    }
 }
 
 function showTyping() {
@@ -518,12 +565,19 @@ function stopRecording() {
 }
 
 function speak(text, language) {
-    if (!synthesis) return;
+    if (!synthesis || !ttsEnabled) return;
     synthesis.cancel();
     
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = LANG_CODES[language] || 'en-IN';
-    utterance.rate = 0.95;
+    const langCode = LANG_CODES[language] || 'en-IN';
+    utterance.lang = langCode;
+    
+    // Try to find a matching voice for the language
+    const voices = synthesis.getVoices();
+    const matchVoice = voices.find(v => v.lang.startsWith(langCode.split('-')[0]));
+    if (matchVoice) utterance.voice = matchVoice;
+    
+    utterance.rate = 0.9;
     utterance.pitch = 1.0;
     
     synthesis.speak(utterance);

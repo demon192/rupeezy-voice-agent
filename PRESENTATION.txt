@@ -1,0 +1,210 @@
+# RupeezyVoice — Presentation Content
+# Copy each slide into Google Slides / PowerPoint
+
+=====================================
+SLIDE 1 — TITLE
+=====================================
+
+RupeezyVoice
+AI Voice Agent for Partner Lead Conversion
+
+Theme 7 | AI for Bharat Hackathon
+Team: [Your Name]
+
+=====================================
+SLIDE 2 — PROBLEM
+=====================================
+
+The Problem
+
+• Rupeezy's partner program offers 100% brokerage share to Authorized Persons
+• Converting leads requires 30-40 manual calls/day per RM
+• RMs can't speak all regional languages (8+ Indian languages)
+• No consistency in pitch delivery or objection handling
+• Manual lead scoring is subjective and slow
+• Follow-ups fall through the cracks
+
+💰 Cost: ₹15-20 per call × 40 calls/day × 250 days = ₹1.5-2L/year per RM
+📉 Conversion Rate: Only 5-8% with manual calls
+
+=====================================
+SLIDE 3 — SOLUTION
+=====================================
+
+Our Solution: RupeezyVoice
+
+An AI voice agent that:
+
+1. Calls leads in their preferred language (8 Indian languages)
+2. Follows the structured telecalling script (Appendix A)
+3. Handles all 5 standard objections with contextual responses
+4. Qualifies leads as Hot/Warm/Cold automatically (0-100 score)
+5. Hands off to human RMs with full transcript + recommended action
+6. Sends WhatsApp follow-ups with one click
+
+🎯 Result: RMs focus ONLY on closing qualified Hot leads
+
+=====================================
+SLIDE 4 — ARCHITECTURE
+=====================================
+
+System Architecture
+
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│  RM Browser │────▶│  FastAPI      │────▶│  Groq LLM   │
+│  (Chrome)   │◀────│  Backend     │◀────│  Llama 3.3  │
+└─────────────┘     └──────────────┘     └─────────────┘
+      │                     │
+      │ Web Speech API      │ SQLite
+      │ (STT + TTS)         │ (Leads, Conversations,
+      ▼                     │  Summaries, WhatsApp)
+  🎤 Voice In              ▼
+  🔊 Voice Out         📊 Dashboard
+
+=====================================
+SLIDE 5 — KEY FEATURES
+=====================================
+
+Key Features
+
+🗣️ 8 Indian Languages    — Hindi, English, Hinglish, Tamil, Telugu,
+                            Marathi, Gujarati, Bengali
+
+📋 Structured Script     — Follows Appendix A telecalling flow exactly
+
+⚡ 5 Objection Handlers  — "Already with broker", "Too good to be true",
+                            "No time", "No clients", "Not interested"
+
+🎯 Auto Lead Scoring     — Hot/Warm/Cold with numeric score (0-100)
+
+🧠 Multi-turn Memory     — Follow-up calls remember previous context
+
+🔊 Voice I/O             — Speak to the agent, listen to responses
+
+📊 RM Dashboard          — Pipeline stats, hot leads, transcripts
+
+💬 WhatsApp Follow-up    — Real wa.me link, one-click send
+
+=====================================
+SLIDE 6 — DEMO SCREENSHOTS
+=====================================
+
+[Insert screenshots of:]
+1. Chat interface with Hindi conversation
+2. Gujarati conversation with TTS button
+3. Post-call summary (Hot lead, score 75+)
+4. Dashboard with stats and hot leads
+5. WhatsApp follow-up link
+
+=====================================
+SLIDE 7 — LANGUAGE DETECTION
+=====================================
+
+Intelligent Language Handling
+
+• Script-based detection (Tamil, Telugu, Gujarati, Bengali scripts)
+• Romanized word detection (200+ regional keywords mapped)
+• Hinglish detection (Hindi+English code-mixing ratio)
+• Auto-switch mid-conversation if lead changes language
+• TTS reads agent responses in correct language
+
+Example:
+  Lead (Bengali): "Ami interested, bolo ki ache"
+  → Detected: Bengali
+  → Agent responds in romanized Bengali
+  → TTS speaks in Bengali voice
+
+=====================================
+SLIDE 8 — LEAD SCORING
+=====================================
+
+Automatic Lead Qualification
+
+HOT (Score 70-100):
+  • Asks "how do I sign up?" or "send link"
+  • Shows excitement about 100% share
+  • Mentions having clients ready
+  → Action: Immediate RM callback
+
+WARM (Score 40-69):
+  • Says "sounds interesting" but wants time
+  • Engages 3+ minutes without committing
+  → Action: WhatsApp follow-up + schedule callback
+
+COLD (Score 0-39):
+  • Says "not interested" firmly
+  • Disconnects quickly
+  → Action: Add to nurture sequence
+
+Scoring factors: hot phrases (+12), questions asked, duration,
+message count, cold signals (-20), objection patterns
+
+=====================================
+SLIDE 9 — SCALABILITY
+=====================================
+
+Production Roadmap
+
+Current (Prototype):
+  ✅ Single RM, AI agent, full conversation flow
+
+Production Scale:
+  • Multi-RM login + role-based lead assignment
+  • Auto-routing by language match + workload
+  • 100+ parallel AI conversations simultaneously
+  • CRM integration (Salesforce/HubSpot)
+  • Real WhatsApp Business API (Gupshup/Twilio)
+  • Call recording + sentiment analysis
+  • Manager dashboard with team metrics
+
+Cost Savings:
+  • AI handles 500+ calls/day vs 40 for human
+  • ₹0.5/call (API cost) vs ₹15-20/call (human)
+  • 90% cost reduction in top-of-funnel
+
+=====================================
+SLIDE 10 — TECH STACK
+=====================================
+
+Tech Stack
+
+| Component    | Choice              | Why                        |
+|-------------|---------------------|----------------------------|
+| Backend     | FastAPI (Python)    | Async, fast, production-grade |
+| LLM         | Groq + Llama 3.3   | 70B quality, <2s latency   |
+| Database    | SQLite             | Zero config, portable       |
+| Frontend    | Vanilla HTML/JS    | No build step, instant load |
+| Voice       | Web Speech API     | Native browser, no cost     |
+| Deployment  | Render             | Free tier, auto-deploy      |
+
+Total API cost per conversation: ~₹0.5 (Groq free tier)
+
+=====================================
+SLIDE 11 — LIVE DEMO
+=====================================
+
+Live Demo
+
+🔗 https://rupeezy-voice-agent.onrender.com
+📂 https://github.com/demon192/rupeezy-voice-agent
+
+Demo Flow:
+1. Add lead (Hindi) → Start Call → AI pitches in Hindi
+2. Raise objection → AI handles with script knowledge
+3. Show interest → Hot lead detected → End Call
+4. View Dashboard → See scoring + transcript
+5. Click WhatsApp → Opens real follow-up message
+6. Follow-up call → AI remembers previous context
+
+=====================================
+SLIDE 12 — THANK YOU
+=====================================
+
+Thank You
+
+RupeezyVoice — AI Voice Agent for Partner Lead Conversion
+
+🔗 Live: https://rupeezy-voice-agent.onrender.com
+📂 Code: https://github.com/demon192/rupeezy-voice-agent
+
+Questions?

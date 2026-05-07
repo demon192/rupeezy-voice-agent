@@ -174,8 +174,18 @@ async def generate_response(
     # Detect language from user's message
     detected_lang = detect_language(user_message)
     
+    # Use lead's configured language as default; only switch if user
+    # is clearly speaking in a different regional language (not english)
+    # This prevents "I want Bengali" (typed in English) from switching to English
+    effective_lang = lead_language
+    if detected_lang != "english" and detected_lang != lead_language:
+        # User is speaking in a specific non-English language — switch to it
+        effective_lang = detected_lang
+    elif detected_lang == "english" and lead_language == "english":
+        effective_lang = "english"
+    
     # Build messages for LLM
-    system_msg = build_system_message(lead_name, detected_lang)
+    system_msg = build_system_message(lead_name, effective_lang)
     
     # Add multi-turn memory from previous calls
     if previous_context:
@@ -217,7 +227,7 @@ async def generate_response(
     
     return {
         "reply": reply,
-        "language_detected": detected_lang,
+        "language_detected": effective_lang,
         "should_end": should_end
     }
 

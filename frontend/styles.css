@@ -203,6 +203,22 @@ body {
     color: #7856ff;
 }
 
+#ttsToggle {
+    padding: 6px 12px;
+    background: transparent;
+    color: #71767b;
+    border: 1px solid #333;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+}
+
+#ttsToggle:hover {
+    border-color: #1d9bf0;
+    color: #1d9bf0;
+}
+
 #endCallBtn {
     padding: 8px 16px;
     background: #f4212e20;
@@ -274,7 +290,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 4px;
+    margin-top: 6px;
 }
 
 .message .msg-time {
@@ -283,17 +299,18 @@ body {
 }
 
 .message .tts-btn {
-    background: none;
-    border: none;
+    background: rgba(29, 155, 240, 0.2);
+    border: 1px solid rgba(29, 155, 240, 0.4);
+    border-radius: 12px;
     cursor: pointer;
-    font-size: 0.85rem;
-    opacity: 0.5;
-    transition: opacity 0.2s;
-    padding: 2px 4px;
+    font-size: 0.7rem;
+    color: #1d9bf0;
+    padding: 3px 8px;
+    transition: background 0.2s;
 }
 
-.message:hover .tts-btn {
-    opacity: 1;
+.message .tts-btn:hover {
+    background: rgba(29, 155, 240, 0.4);
 }
 
 .end-suggestion {
